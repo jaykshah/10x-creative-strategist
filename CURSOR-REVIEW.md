@@ -27,7 +27,9 @@ Tool execution is project-scoped. Cloud specialists are optional and require dep
 
 Run `npm run check` and `npm run package`. These commands require no API credentials and make no provider calls.
 
-The companion backend work was tested in the Creative OS application, including tool discovery/schema coverage, project/scope checks, metered execution and exact-revision concept approval. This repository contains the plugin distribution only. Backend deployment and live Cursor OAuth/tool execution are separate from static package validation and have not been certified by this publication.
+The companion backend work was tested in the Creative OS application, including tool discovery/schema coverage, project/scope checks, metered execution and exact-revision concept approval. The release passed 387 automated tests, backend and web typechecks, and API and web production builds; four integration tests were skipped.
+
+The hosted release was deployed on September 9, 2026. Live checks passed for health/readiness, hosted OAuth discovery, Cursor native and IPv6 callback registration, the hosted consent redirect, and rejection of unsupported or unregistered callbacks. The user then confirmed a successful Cursor connection to `https://skill.10xproductivity.co/mcp` after sign-in. This confirms connection compatibility; paid tool execution and every optional provider were not exercised by this smoke test.
 
 This public repository is shared for evaluation; publication is not a Cursor Marketplace listing or approval. No new open-source license has been assigned by this export. The author can select a distribution license before a marketplace submission if required.
 

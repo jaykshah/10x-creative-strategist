@@ -56,6 +56,8 @@ The toolset covers website/search research, Meta ads, Instagram, TikTok, YouTube
 
 The plugin connects to `https://skill.10xproductivity.co/mcp`. Creative OS provides authentication, project isolation, provider execution, storage and billing. No API keys, database credentials or customer records are included here.
 
+The hosted compatibility release was deployed on September 9, 2026, and a successful Cursor connection was confirmed after sign-in. Health, OAuth discovery, native/IPv6 callback registration and the hosted consent redirect also passed verification.
+
 **The catalog is a build-time inventory, not a live-service guarantee.** New workflow tools, direct media execution and complete provider schemas require the corresponding Creative OS backend release. Installing this repository does not deploy that server. Use MCP discovery and `creative_os_list_capabilities` to verify the tools currently available to your account. Disabled providers and cloud workers are not enabled by installation.
 
 Local skill loading does not incur a Creative OS workflow-retrieval charge. Research, generation, cloud jobs and hosted workflow calls may consume carrots. Cursor's model usage is separate, and the user completes any Stripe checkout themselves.
