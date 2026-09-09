@@ -1,0 +1,14 @@
+{
+  "name": "10x-creative-strategist",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone 10X Creative Strategist plugin for Cursor.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "check": "node scripts/validate-plugin.mjs",
+    "package": "npm run check && node scripts/package-plugin.mjs"
+  }
+}

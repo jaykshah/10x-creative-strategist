@@ -1,0 +1,22 @@
+{
+  "name": "10x-creative-strategist",
+  "displayName": "10X Creative Strategist",
+  "version": "0.1.0",
+  "description": "Evidence-led 10X creative strategy: active advertiser intelligence, project knowledge, buyer insight, creative opportunities, and the full Creative OS toolset.",
+  "author": {
+    "name": "10X Productivity"
+  },
+  "homepage": "https://skill.10xproductivity.co",
+  "keywords": [
+    "10x",
+    "creative-strategy",
+    "advertising",
+    "advertiser-intelligence",
+    "research",
+    "marketing",
+    "mcp"
+  ],
+  "logo": "assets/logo.png",
+  "mcpServers": "mcp.json",
+  "repository": "https://github.com/jaykshah/10x-creative-strategist"
+}

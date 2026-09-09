@@ -1,0 +1,19 @@
+{
+  "sourceCatalog": "plugins/creative-os/skills",
+  "generator": "scripts/sync-cursor-plugin.ts",
+  "imports": [
+    {
+      "source": "plugins/creative-os/skills/build-advertiser-intelligence/SKILL.md",
+      "target": "skills/build-advertiser-intelligence/SKILL.md",
+      "sha256": "88a119163ec1302e53fcbb68751af5c04caa253d707c06cbae81590b8d232031",
+      "packagedSha256": "828d46b1403096fc3f3d5ac02c1568d91f077859cc4ffa473e42f247b0076204",
+      "override": "scripts/cursor-plugin-overrides/build-advertiser-intelligence.md"
+    }
+  ],
+  "generated": [
+    "catalog.json",
+    "skills/10x-creative-strategist/references/catalog.md",
+    "skills/build-advertiser-intelligence/SKILL.md"
+  ],
+  "publicationNote": "Standalone public distribution. Unused legacy worker-contract references are excluded. The generator and source paths identify the upstream Creative OS build; they are not runtime dependencies of this repository."
+}

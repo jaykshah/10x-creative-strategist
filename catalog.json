@@ -1,0 +1,1639 @@
+{
+  "description": "Build-time inventory, not a promise of deployment availability. Discover tools/list for current schemas, models and enabled services. All tools are accessible through the single Creative OS MCP connection; this file is not an allowlist.",
+  "skills": [
+    {
+      "name": "build-advertiser-intelligence",
+      "hostedSlug": "client_onboarding",
+      "hostedActive": true,
+      "version": 5,
+      "description": "Understand an advertiser by delegating focused research jobs and reviewing the returned answers in Creative OS."
+    }
+  ],
+  "tools": [
+    {
+      "id": "web_scrape_page",
+      "mcpToolName": "creative_os_web_scrape_page",
+      "title": "Scrape web page",
+      "description": "Fetch a web page (and optionally linked pages) and return the main content as clean text and Markdown.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The page to fetch and extract readable content from"
+          },
+          "maxPages": {
+            "default": 1,
+            "description": "How many linked pages to crawl, starting from the URL",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "url",
+          "maxPages",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "google_search",
+      "mcpToolName": "creative_os_google_search",
+      "title": "Google search",
+      "description": "Run a Google search and return the organic results.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The Google search query to run"
+          },
+          "maxResults": {
+            "default": 10,
+            "description": "Maximum number of organic results to return",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "countryCode": {
+            "description": "Two-letter country code to localize results, e.g. \"us\"",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "query",
+          "maxResults",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "instagram_profile",
+      "mcpToolName": "creative_os_instagram_profile",
+      "title": "Instagram profile lookup",
+      "description": "Return public profile details for one or more Instagram usernames.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "usernames": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Instagram handles to fetch public profile details for"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "usernames",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "instagram_reels",
+      "mcpToolName": "creative_os_instagram_reels",
+      "title": "Instagram reel scraper",
+      "description": "Scrape Instagram reels from profiles or reel URLs — caption, timestamp, transcript, hashtags, mentions, likes, comments, views, shares, and duration.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "usernames": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Instagram usernames, profile URLs, IDs, or direct reel URLs. Each is processed individually."
+          },
+          "resultsLimit": {
+            "default": 10,
+            "description": "Maximum reels to scrape per profile (ignored for direct reel URLs).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "onlyPostsNewerThan": {
+            "description": "Only reels from this date/time to now. Accepts YYYY-MM-DD, a full ISO timestamp, or relative time like \"2 weeks\". Evaluated in UTC.",
+            "type": "string",
+            "pattern": "^(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])(T[0-2]\\d:[0-5]\\d(:[0-5]\\d)?(\\.\\d+)?Z?)?$|^(\\d+)\\s*(minute|hour|day|week|month|year)s?$"
+          },
+          "skipPinnedPosts": {
+            "default": false,
+            "description": "Exclude pinned reels from the results.",
+            "type": "boolean"
+          },
+          "skipTrialReels": {
+            "default": false,
+            "description": "Exclude trial reels (creator test reels shown to non-followers).",
+            "type": "boolean"
+          },
+          "includeSharesCount": {
+            "default": false,
+            "description": "Extract each reel's share count. Paid add-on.",
+            "type": "boolean"
+          },
+          "includeTranscript": {
+            "default": false,
+            "description": "Extract a text transcript of the reel audio. Paid add-on, charged per minute.",
+            "type": "boolean"
+          },
+          "includeDownloadedVideo": {
+            "default": false,
+            "description": "Download and store a copy of the reel video. Paid add-on, charged per MB.",
+            "type": "boolean"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "usernames",
+          "resultsLimit",
+          "skipPinnedPosts",
+          "skipTrialReels",
+          "includeSharesCount",
+          "includeTranscript",
+          "includeDownloadedVideo",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "instagram_hashtag",
+      "mcpToolName": "creative_os_instagram_hashtag_direct",
+      "title": "Instagram hashtag scraper",
+      "description": "Scrape Instagram posts or reels by hashtag or keyword — captions, locations, likes, plays, comments, images, timestamps, and related hashtags.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "hashtags": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^\\s*#?[^!?.,:;\\-+=*&%$#@/\\\\~^|<>()[\\]{}\"'`]+$"
+            },
+            "description": "Hashtags or keywords, with or without a leading #. Each entry is one search term."
+          },
+          "keywordSearch": {
+            "default": false,
+            "description": "Search by keyword instead of hashtag. Keywords may contain spaces; the returned fields differ slightly from hashtag results.",
+            "type": "boolean"
+          },
+          "resultsType": {
+            "default": "posts",
+            "description": "Whether to scrape posts, reels, or stories for each term.",
+            "type": "string",
+            "enum": [
+              "posts",
+              "reels",
+              "stories"
+            ]
+          },
+          "resultsLimit": {
+            "default": 10,
+            "description": "Maximum results per hashtag or keyword.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "hashtags",
+          "keywordSearch",
+          "resultsType",
+          "resultsLimit",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "meta_ad_library",
+      "mcpToolName": "creative_os_meta_ad_library",
+      "title": "Meta ad library scraper",
+      "description": "Scrape Meta (Facebook, Instagram, Messenger, Audience Network) ads from the Ad Library by keyword, Page ID, or Ad Library URL — creatives, copy, CTAs, and impressions/spend data where Meta makes it available.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "description": "Search term or brand name, e.g. \"nike\".",
+            "type": "string",
+            "minLength": 1
+          },
+          "pageId": {
+            "description": "Numeric Facebook/Meta Page ID (brand ID).",
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          "adLibraryUrl": {
+            "description": "Full Meta Ad Library URL, including its search parameters.",
+            "type": "string",
+            "format": "uri"
+          },
+          "maxResults": {
+            "default": 50,
+            "description": "How many ads to collect; pagination stops at this count.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "sortBy": {
+            "default": "total_impressions",
+            "description": "total_impressions: Meta's impression ordering. most_recent: Meta's relevancy/monthly view. Sorting already present in adLibraryUrl takes precedence.",
+            "type": "string",
+            "enum": [
+              "total_impressions",
+              "most_recent"
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "maxResults",
+          "sortBy",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "tiktok_scraper",
+      "mcpToolName": "creative_os_tiktok_scraper",
+      "title": "TikTok scraper",
+      "description": "Scrape TikTok videos by hashtag, profile, search query, or direct URL — captions, author, engagement metrics, sound, and duration.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "hashtags": {
+            "description": "TikTok hashtags (without #), e.g. [\"sunset\"].",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "profiles": {
+            "description": "TikTok usernames or user IDs.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "searchQueries": {
+            "description": "Free-text search terms applied to videos and profiles.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "postURLs": {
+            "description": "Direct TikTok video URLs to scrape.",
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "resultsPerPage": {
+            "default": 10,
+            "description": "Max videos per hashtag / profile / query.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "resultsPerPage",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "youtube_scraper",
+      "mcpToolName": "creative_os_youtube_scraper",
+      "title": "YouTube scraper",
+      "description": "Scrape YouTube videos by search term or channel/video URL — title, channel, views, likes, comments, duration, and description.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "searchQueries": {
+            "description": "YouTube search terms, as typed in the search bar.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "videoUrls": {
+            "description": "YouTube video, channel, or playlist URLs.",
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "maxResults": {
+            "default": 10,
+            "description": "Max videos to collect (per query or channel).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "sortBy": {
+            "description": "Sort order for search queries.",
+            "type": "string",
+            "enum": [
+              "relevance",
+              "rating",
+              "date",
+              "views"
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "maxResults",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "instagram_reels_download",
+      "mcpToolName": "creative_os_instagram_reels_download",
+      "title": "Instagram reels downloader",
+      "description": "Download Instagram reels/posts by URL and return direct, downloadable media links (video/image variants).",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "links": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Instagram reel or post URLs to download."
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "links",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "youtube_video_download",
+      "mcpToolName": "creative_os_youtube_video_download",
+      "title": "YouTube video downloader",
+      "description": "Download YouTube videos (360p–4K) and return a link to the stored file.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "videoUrls": {
+            "description": "YouTube video URLs to download.",
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "videoIds": {
+            "description": "YouTube video IDs to download.",
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "quality": {
+            "default": "720",
+            "description": "Target video quality.",
+            "type": "string",
+            "enum": [
+              "360",
+              "480",
+              "720",
+              "1080",
+              "1440",
+              "2160"
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "quality",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "facebook_video_download",
+      "mcpToolName": "creative_os_facebook_video_download",
+      "title": "Facebook video downloader",
+      "description": "Download a Facebook video/reel by URL and return direct, downloadable media links with quality variants.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "A Facebook video or reel URL (e.g. an fb.watch link)."
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "url",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "generate_image",
+      "mcpToolName": "creative_os_generate_image_direct",
+      "title": "Generate image",
+      "description": "Generate or edit images from a prompt and optional image/video references using gpt_image_2, nano_banana, nano_banana_2, nano_banana_pro, nano_banana_2_lite. Images are stored and returned as URLs.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": [
+              "gpt_image_2",
+              "nano_banana",
+              "nano_banana_2",
+              "nano_banana_pro",
+              "nano_banana_2_lite"
+            ],
+            "description": "Which image model to use."
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32000,
+            "description": "Text description of the image to generate."
+          },
+          "aspectRatio": {
+            "description": "Output aspect-ratio enum: ONE_BY_ONE (square), FOUR_BY_FIVE (portrait feed), SIXTEEN_BY_NINE or FOUR_BY_THREE (landscape), NINE_BY_SIXTEEN or THREE_BY_FOUR (portrait).",
+            "type": "string",
+            "enum": [
+              "ASPECT_RATIO_ONE_BY_ONE",
+              "ASPECT_RATIO_FOUR_BY_FIVE",
+              "ASPECT_RATIO_SIXTEEN_BY_NINE",
+              "ASPECT_RATIO_NINE_BY_SIXTEEN",
+              "ASPECT_RATIO_FOUR_BY_THREE",
+              "ASPECT_RATIO_THREE_BY_FOUR"
+            ]
+          },
+          "quality": {
+            "description": "Quality tier for GPT Image.",
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "resolution": {
+            "description": "Output resolution for supported Nano Banana models.",
+            "type": "string",
+            "enum": [
+              "1K",
+              "2K",
+              "4K"
+            ]
+          },
+          "background": {
+            "description": "Background mode for GPT Image.",
+            "type": "string",
+            "enum": [
+              "transparent",
+              "opaque",
+              "auto"
+            ]
+          },
+          "outputFormat": {
+            "description": "File format for GPT Image output.",
+            "type": "string",
+            "enum": [
+              "png",
+              "jpeg",
+              "webp"
+            ]
+          },
+          "referenceImages": {
+            "description": "Ordered image references used to preserve subjects, products, characters, composition, or style.",
+            "maxItems": 14,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "mimeType": {
+                  "type": "string",
+                  "enum": [
+                    "image/png",
+                    "image/jpeg",
+                    "image/webp"
+                  ]
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "referenceVideos": {
+            "description": "Video references for supported Gemini models; fps controls frame sampling and defaults to 0.5.",
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "mimeType": {
+                  "type": "string",
+                  "enum": [
+                    "video/mp4",
+                    "video/quicktime",
+                    "video/webm",
+                    "video/mpeg"
+                  ]
+                },
+                "fps": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 24
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "n": {
+            "default": 1,
+            "description": "Number of images to generate.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "model",
+          "prompt",
+          "n",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "animate_image",
+      "mcpToolName": "creative_os_animate_image",
+      "title": "Animate image",
+      "description": "Create a short Seedance video from role-aware image references and optional video references, persist the result, and return a signed URL.",
+      "kind": "provider",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "model": {
+            "default": "seedance_2",
+            "type": "string",
+            "enum": [
+              "seedance_2",
+              "seedance_2_fast",
+              "seedance_2_mini"
+            ]
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32000,
+            "description": "Motion, action, camera, and audio direction for the clip."
+          },
+          "referenceImages": {
+            "minItems": 1,
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "role": {
+                  "default": "first_frame",
+                  "type": "string",
+                  "enum": [
+                    "first_frame",
+                    "last_frame",
+                    "reference_image"
+                  ]
+                }
+              },
+              "required": [
+                "url",
+                "role"
+              ],
+              "additionalProperties": false
+            },
+            "description": "One or more public or signed HTTPS image references and their roles."
+          },
+          "referenceVideos": {
+            "default": [],
+            "description": "Optional HTTPS videos used in general reference mode.",
+            "maxItems": 3,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "resolution": {
+            "default": "720p",
+            "type": "string",
+            "enum": [
+              "480p",
+              "720p",
+              "1080p"
+            ]
+          },
+          "aspectRatio": {
+            "default": "adaptive",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4",
+              "1:1",
+              "21:9",
+              "adaptive"
+            ]
+          },
+          "durationSeconds": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 15
+          },
+          "generateAudio": {
+            "default": false,
+            "type": "boolean"
+          },
+          "watermark": {
+            "default": false,
+            "type": "boolean"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Creative OS project ID. Use creative_os_list_projects first."
+          }
+        },
+        "required": [
+          "model",
+          "prompt",
+          "referenceImages",
+          "referenceVideos",
+          "resolution",
+          "aspectRatio",
+          "durationSeconds",
+          "generateAudio",
+          "watermark",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "load_local_specialist",
+      "mcpToolName": "creative_os_load_local_specialist",
+      "title": "Load specialist guidance locally",
+      "description": "Read specialist domain guidance to apply in this chat using the available local tools. This does not launch an agent, change tool permissions, or spend a cloud job budget. Roles: brand-brain, business, competitors, customers, image-creative, organic, paid, review, synthesis.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "brand-brain",
+              "business",
+              "competitors",
+              "customers",
+              "image-creative",
+              "organic",
+              "paid",
+              "review",
+              "synthesis"
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "id",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "publish_specialist_plan",
+      "mcpToolName": "creative_os_publish_specialist_plan",
+      "title": "Publish work plan",
+      "description": "Return a work plan for display in this conversation before dispatch. Use unique task IDs and reuse them when starting jobs. This does not dispatch or persist a plan.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "steps": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "workerId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 50
+                }
+              },
+              "required": [
+                "taskId",
+                "title",
+                "workerId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "title",
+          "steps",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "create_specialist_run",
+      "mcpToolName": "creative_os_create_specialist_run",
+      "title": "Start specialist job",
+      "description": "Give a specialist a question, bounded scope and the relevant context directly. Do not refer it to skill files or research-pack documents. Creative OS binds identity and stores the returned answer. Budgets are US cents; use bounded amounts justified by the user's requested work. Provide the same taskId only when checking/retrying an identical dispatch. Available workers: []",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "workerId": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "conceptCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Required for image-creative: the number of distinct concepts selected by the user."
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50000
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50000
+          },
+          "context": {
+            "default": "",
+            "type": "string",
+            "maxLength": 500000
+          },
+          "cloudBudgetCents": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 10000
+          },
+          "providerBudgetCents": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "allowedToolIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "workerId",
+          "question",
+          "scope",
+          "context",
+          "cloudBudgetCents",
+          "providerBudgetCents",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "get_specialist_run",
+      "mcpToolName": "creative_os_get_specialist_run",
+      "title": "Check specialist job",
+      "description": "Read the current job status and stored answer. Cursor does not subscribe to Creative OS web chat progress. Reuse the returned task ID for bounded status checks; never redispatch a running job. Report pending work honestly.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "taskId",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "get_specialist_artifact",
+      "mcpToolName": "creative_os_get_specialist_artifact",
+      "title": "Read saved specialist work",
+      "description": "Retrieve a checkpoint, dataset or other saved artifact from a job in this project, including an interrupted job. Omit key to list artifacts. Use saved context when deliberately resuming work; do not blindly repeat charged calls.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "key": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "taskId",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "request_image_concept_count",
+      "mcpToolName": "creative_os_request_image_concept_count",
+      "title": "Choose concept count",
+      "description": "Return the brief for a concept-count question. If the user has not specified a count, ask for 1–12 concepts in chat and wait for their choice. This does not render a picker or start generation.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "brief": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "brief",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "get_image_ad_context",
+      "mcpToolName": "creative_os_get_image_ad_context",
+      "title": "Read image ad resources",
+      "description": "List uploaded project image assets with IDs/URLs, connected image models and saved concepts. Pass relevant product/logo/style assets and brand knowledge to the image-creative specialist. This does not generate images.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "propose_image_ads",
+      "mcpToolName": "creative_os_propose_image_ads",
+      "title": "Review image ad concepts",
+      "description": "Save draft image ad concepts without generating media. Import a completed image-creative job using taskId, or supply concepts using this schema. Read each saved concept with creative_os_get_image_ad and show its exact prompt and references for review. Cursor does not render Creative OS web chat approval cards. Saving is not approval.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "concepts": {
+            "minItems": 1,
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "audience": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                },
+                "objective": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "opportunity": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "hypothesis": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1500
+                },
+                "evidence": {
+                  "maxItems": 12,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      },
+                      "observation": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1500
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "observed",
+                          "inference"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "source",
+                      "observation",
+                      "kind"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "primaryText": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "headline": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "callToAction": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "brandGuidelines": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "visualDirection": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "references": {
+                  "maxItems": 14,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "assetId": {
+                        "type": "string",
+                        "allOf": [
+                          {
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          {
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          }
+                        ]
+                      },
+                      "role": {
+                        "type": "string",
+                        "enum": [
+                          "product",
+                          "logo",
+                          "style"
+                        ]
+                      },
+                      "instruction": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                      }
+                    },
+                    "required": [
+                      "assetId",
+                      "role",
+                      "instruction"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "productDepiction": {
+                  "type": "string",
+                  "enum": [
+                    "reference_required",
+                    "no_product"
+                  ]
+                },
+                "prompt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16000
+                },
+                "model": {
+                  "type": "string",
+                  "enum": [
+                    "nano_banana_2",
+                    "nano_banana_pro",
+                    "gpt_image_2"
+                  ]
+                },
+                "aspectRatio": {
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:5",
+                    "9:16"
+                  ]
+                },
+                "videoPrompt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "missingInputs": {
+                  "maxItems": 20,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                }
+              },
+              "required": [
+                "title",
+                "audience",
+                "objective",
+                "opportunity",
+                "hypothesis",
+                "evidence",
+                "primaryText",
+                "headline",
+                "callToAction",
+                "brandGuidelines",
+                "visualDirection",
+                "references",
+                "productDepiction",
+                "prompt",
+                "model",
+                "aspectRatio",
+                "missingInputs"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "expectedCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "get_image_ad",
+      "mcpToolName": "creative_os_get_image_ad",
+      "title": "Read image ad",
+      "description": "Read a saved concept, revision, exact generation prompt, references and image/video status. Use its current revision for edits or explicitly authorized production. No automatic web chat polling occurs in Cursor.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "id",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "edit_image_ad",
+      "mcpToolName": "creative_os_edit_image_ad",
+      "title": "Edit image ad draft",
+      "description": "Update a saved draft's prompt, model and aspect ratio using its current revision. Read the draft first. Does not approve or generate.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16000
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "nano_banana_2",
+              "nano_banana_pro",
+              "gpt_image_2"
+            ]
+          },
+          "aspectRatio": {
+            "type": "string",
+            "enum": [
+              "1:1",
+              "4:5",
+              "9:16"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "revision",
+          "prompt",
+          "model",
+          "aspectRatio",
+          "id",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "approve_image_ad",
+      "mcpToolName": "creative_os_approve_image_ad",
+      "title": "Approve image ad generation",
+      "description": "Queue metered image generation for a saved draft at the exact reviewed revision. Call only when the user has authorized generation of that concept. Return queued status truthfully; read the result with creative_os_get_image_ad.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            ]
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "retry_image_ad",
+      "mcpToolName": "creative_os_retry_image_ad",
+      "title": "Retry image ad generation",
+      "description": "Retry a failed or uncertain generation at the current revision only after the user requests a retry and any uncertain provider charge is reconciled. This may incur a new charge.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            ]
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "animate_image_ad",
+      "mcpToolName": "creative_os_animate_image_ad",
+      "title": "Animate image ad",
+      "description": "Queue metered video generation from a saved concept and project image at the current revision, only when the user requests that video. Read completion with creative_os_get_image_ad.",
+      "kind": "workflow",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "durationSeconds": {
+            "default": 5,
+            "anyOf": [
+              {
+                "type": "number",
+                "const": 5
+              },
+              {
+                "type": "number",
+                "const": 10
+              }
+            ]
+          },
+          "referenceAssetId": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            ]
+          },
+          "id": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "description": "Selected Creative OS project ID. Discover with creative_os_list_projects."
+          }
+        },
+        "required": [
+          "revision",
+          "prompt",
+          "durationSeconds",
+          "id",
+          "projectId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "supportingToolNames": [
+    "creative_os_list_projects",
+    "creative_os_create_project",
+    "creative_os_list_capabilities",
+    "creative_os_balance",
+    "creative_os_recharge",
+    "creative_os_list_knowledge_files",
+    "creative_os_read_knowledge_file",
+    "creative_os_capture_knowledge",
+    "creative_os_list_assets",
+    "creative_os_upload_asset",
+    "creative_os_create_asset_upload",
+    "creative_os_complete_asset_upload",
+    "creative_os_generate_image",
+    "creative_os_run_image_generation",
+    "creative_os_instagram_hashtag"
+  ]
+}
